@@ -42,10 +42,11 @@ public class WxBackController {
             // 微信服务器推送过来的是XML格式。
             WxXmlMessage wx = XStreamTransformer.fromXml(WxXmlMessage.class, request.getInputStream());
             System.out.println(wx.toString());
-            router.rule().event(WxConsts.EVT_SUBSCRIBE).handler(SubscribeHandler.getInstance()).end();
+            //1.实现订阅处理
+            router.rule().event(WxConsts.EVT_SUBSCRIBE).handler(SubscribeHandler.getInstance()).event(WxConsts.EVT_UNSUBSCRIBE).handler(SubscribeHandler.getInstance()).end();
             // 把消息传递给路由器进行处理
             WxXmlOutMessage xmlOutMsg = router.route(wx);
-            if (xmlOutMsg != null){
+            if (xmlOutMsg != null) {
                 // 因为是明文，所以不用加密，直接返回给用户
                 out.print(xmlOutMsg.toXml());
             }
